@@ -39,7 +39,7 @@ A simple, responsive chatbot application built with Flask, SQLite, and the Gemin
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/gemini-chatbot.git
+   git clone https://github.com/soroushmb/gemini-chatbot.git
    cd gemini-chatbot
    ```
 
