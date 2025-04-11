@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gemini Chatbot{% endblock %}</title>
+    <!-- Add DM Sans font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                        'slide-down': 'slideDown 0.3s ease-in-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .transition-theme {
+                transition-property: background-color, border-color, color, fill, stroke;
+                transition-duration: 300ms;
+                transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 transition-theme dark:bg-gray-900 dark:text-gray-100 animate-fade-in">
+    <nav class="bg-blue-600 text-white shadow-md dark:bg-gray-800 transition-theme">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-wrap items-center justify-between">
+                <a href="{{ url_for('chat') }}" class="flex items-center text-xl font-bold">
+                    Gemini Chatbot
+                </a>
+                <button id="mobile-menu-button" class="md:hidden rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+                <div id="menu" class="hidden w-full md:flex md:w-auto md:items-center">
+                    <ul class="flex flex-col md:flex-row md:space-x-4">
+                        {% if session.user_id %}
+                            <li>
+                                <a href="{{ url_for('chat') }}" class="block py-2 hover:text-blue-200 md:py-0">Chat</a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('profile') }}" class="block py-2 hover:text-blue-200 md:py-0">Profile</a>
+                            </li>
+                            {% if session.user_role == 'admin' %}
+                                <li>
+                                    <a href="{{ url_for('admin_dashboard') }}" class="block py-2 hover:text-blue-200 md:py-0">Admin</a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{{ url_for('logout') }}" class="block py-2 hover:text-blue-200 md:py-0">Logout</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{{ url_for('login') }}" class="block py-2 hover:text-blue-200 md:py-0">Login</a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('register') }}" class="block py-2 hover:text-blue-200 md:py-0">Register</a>
+                            </li>
+                        {% endif %}
+                        <li class="flex items-center ml-4">
+                            <button id="theme-toggle" class="rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-white">
+                                <!-- Sun icon -->
+                                <svg id="light-icon" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                <!-- Moon icon -->
+                                <svg id="dark-icon" class="h-6 w-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-6 animate-slide-up">
+        {% for message in get_flashed_messages() %}
+            <div class="mb-4 rounded-md bg-blue-100 p-4 text-blue-800 dark:bg-blue-900 dark:text-blue-100 animate-slide-down">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Theme switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            const lightIcon = document.getElementById('light-icon');
+            const darkIcon = document.getElementById('dark-icon');
+            
+            // Function to set theme
+            function setTheme(theme) {
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                } else {
+                    html.classList.remove('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                }
+                localStorage.setItem('theme', theme);
+            }
+            
+            // Check for saved theme preference
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            setTheme(currentTheme);
+            
+            // Listen for toggle changes
+            themeToggle.addEventListener('click', function() {
+                if (html.classList.contains('dark')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

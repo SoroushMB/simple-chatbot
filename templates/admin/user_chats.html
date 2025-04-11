@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}User Chats - Gemini Chatbot{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-2xl font-bold">Chat History for {{ user['email'] }}</h2>
+    <nav class="mt-4 border-b border-gray-200 dark:border-gray-700">
+        <ul class="flex flex-wrap -mb-px">
+            <li class="mr-2">
+                <a href="{{ url_for('admin_dashboard') }}" class="inline-block rounded-t-lg border-b-2 border-transparent py-2 px-4 text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300">Dashboard</a>
+            </li>
+            <li class="mr-2">
+                <a href="{{ url_for('admin_users') }}" class="inline-block rounded-t-lg border-b-2 border-transparent py-2 px-4 text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300">Manage Users</a>
+            </li>
+            <li class="mr-2">
+                <a href="#" class="inline-block rounded-t-lg border-b-2 border-blue-600 py-2 px-4 text-blue-600 dark:border-blue-500 dark:text-blue-500">User Chats</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div class="overflow-hidden rounded-lg bg-white shadow-md transition-theme dark:bg-gray-800 animate-slide-up">
+    <div class="px-4 py-5 sm:p-6">
+        {% if chats %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Timestamp</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">User Message</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Bot Response</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                        {% for chat in chats %}
+                            <tr class="transition-theme hover:bg-gray-50 dark:hover:bg-gray-700 animate-fade-in" style="animation-delay: {{ loop.index * 0.05 }}s">
+                                <td class="whitespace-nowrap px-6 py-4 text-sm">{{ chat['timestamp'] }}</td>
+                                <td class="px-6 py-4 text-sm">{{ chat['message'] }}</td>
+                                <td class="px-6 py-4 text-sm">{{ chat['response'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="rounded-md bg-blue-50 p-4 dark:bg-blue-900 animate-fade-in">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700 dark:text-blue-200">No chat history found for this user.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
