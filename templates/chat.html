@@ -10,12 +10,7 @@
 
 <div class="mx-auto max-w-3xl">
     <div class="overflow-hidden rounded-lg bg-white shadow-md transition-theme dark:bg-gray-800">
-        <div class="px-4 py-5 sm:p-6">{for chat in chat_history %}
-            <div class="mb-4 flex justify-end">
-                <div class="max-w-xs rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md animate-slide-up" style="animation-delay: {{ loop.index * 0.1 }}s">
-                    <p>{{ chat['message'] }}</p>
-                    <small class="block text-xs text-blue-200">{{ chat['timestamp'] }}</small>
-                </div>
+        <div class="px-4 py-5 sm:p-6">
             <div id="chat-container" class="mb-4 h-96 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
                 {% if chat_history %}
                     {% for chat in chat_history %}
