@@ -38,42 +38,42 @@ A simple, responsive chatbot application built with Flask, SQLite, and the Gemin
 ## Installation
 
 1. Clone the repository:
-   \`\`\`bash
+   ```bash
    git clone https://github.com/yourusername/gemini-chatbot.git
    cd gemini-chatbot
-   \`\`\`
+   ```
 
 2. Create a virtual environment and activate it:
-   \`\`\`bash
+   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
-   \`\`\`
+   ```
 
 3. Install the required packages:
-   \`\`\`bash
+   ```bash
    pip install flask google-generativeai werkzeug python-dotenv
-   \`\`\`
+   ```
 
 4. Set up environment variables by creating a `.env` file:
-   \`\`\`bash
+   ```bash
    # Copy the example .env file
    cp .env.example .env
    
    # Edit the .env file with your actual values
    # Replace the placeholder values with your actual API keys and secrets
-   \`\`\`
+   ```
 
 5. Initialize the database:
-   \`\`\`bash
+   ```bash
    flask init-db
-   \`\`\`
+   ```
 
 6. Run the application:
-   \`\`\`bash
+   ```bash
    flask run
-   \`\`\`
+   ```
 
-7. Open your browser and navigate to `http://127.0.0.1:5000/`
+8. Open your browser and navigate to ```http://127.0.0.1:5000/```
 
 ## Default Admin Credentials
 
@@ -82,7 +82,7 @@ A simple, responsive chatbot application built with Flask, SQLite, and the Gemin
 
 ## Project Structure
 
-\`\`\`
+```
 gemini_chatbot/
 ├── app.py                  # Main Flask application
 ├── schema.sql              # Database schema
@@ -106,7 +106,7 @@ gemini_chatbot/
     ├── base.html           # Base template
     ├── chat.html           # Chat interface
     └── profile.html        # User profile
-\`\`\`
+```
 
 ## Notes
 
